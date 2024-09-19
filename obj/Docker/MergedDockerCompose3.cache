@@ -1,0 +1,51 @@
+name: dockercompose9372897536572696062
+services:
+  coffeeshop.api:
+    build:
+      context: C:\edu\studies\Coffeeshop.OpenTelemetry
+      dockerfile: CoffeeShop.Api/Dockerfile
+    container_name: api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ASPNETCORE_HTTPS_PORTS: "8081"
+    image: coffeeshopapi
+    networks:
+      otel: null
+    ports:
+      - mode: ingress
+        target: 8080
+        protocol: tcp
+      - mode: ingress
+        target: 8081
+        protocol: tcp
+      - mode: ingress
+        target: 8081
+        published: "8081"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Users\Luiz Brandão\AppData\Roaming/Microsoft/UserSecrets
+        target: /home/app/.microsoft/usersecrets
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\Luiz Brandão\AppData\Roaming/ASP.NET/Https
+        target: /home/app/.aspnet/https
+        read_only: true
+        bind:
+          create_host_path: true
+  coffeeshop.dashboard:
+    container_name: dashboard
+    image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
+    networks:
+      otel: null
+    ports:
+      - mode: ingress
+        target: 18888
+        published: "18888"
+        protocol: tcp
+networks:
+  otel:
+    name: dockercompose9372897536572696062_otel
